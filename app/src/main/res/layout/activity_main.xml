@@ -57,7 +57,7 @@
             android:gravity="center"
             android:background="@drawable/corners"
             android:padding="18dp"
-            android:inputType="text"
+            android:inputType="textPassword"
             android:id="@+id/password"
             android:hint="Passowrd"
             android:layout_marginTop="18dp"/>

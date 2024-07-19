@@ -5,7 +5,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.service.autofill.UserData;
 
 public class DBHelper extends SQLiteOpenHelper {
 
@@ -67,12 +66,15 @@ public class DBHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery("SELECT name FROM users WHERE email=?", new String[]{email});
 
-        String name = null;
-        if (cursor.moveToFirst()) {
-            name = cursor.getString(0);
+        if (cursor != null) {
+            if (cursor.moveToFirst()) {
+                String name = cursor.getString(cursor.getColumnIndexOrThrow("name"));
+                cursor.close();
+                return name;
+            }
+            cursor.close();
         }
-        cursor.close();
-        return name;
+        return null;
     }
 
 }

@@ -9,6 +9,9 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
 public class HomeActivity extends AppCompatActivity {
 
     private DBHelper DB;
@@ -23,20 +26,27 @@ public class HomeActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
+        DB = new DBHelper(this);
+
         String email = getIntent().getStringExtra("email");
-        String name = "Name";
-        name = DB.getUserData(email);
-        /*String name="HHH";*/
 
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        executor.submit(() -> {
+            String name = DB.getUserData(email);
+            runOnUiThread(() -> {
+                TextView nameTextView = findViewById(R.id.name);
+                if (name != null) {
+                    nameTextView.setText(name);
+                } else {
+                    nameTextView.setText("Name not found");
+                }
+            });
+        });
 
-        TextView nameTextView = findViewById(R.id.name);
-        TextView emailTextView = findViewById(R.id.email);
         if (email != null) {
+            TextView emailTextView = findViewById(R.id.email);
             emailTextView.setText(email);
         }
-        if (name != null) {
-            nameTextView.setText(name);
-        }
-
     }
 }
